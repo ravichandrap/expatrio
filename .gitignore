@@ -102,3 +102,12 @@ dist
 
 # TernJS port file
 .tern-port
+.DS_Store
+.idea/sonarlint/
+
+*.xml
+*.prefs
+*.class
+.idea/**/**
+auth-service/.idea/**/**
+*.log
