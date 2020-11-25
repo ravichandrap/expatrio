@@ -1,5 +1,5 @@
 import {getEnvironmentVariables} from "../utils/getEnvironmentVariables";
-import {Dispatch} from "react";
+import {Dispatch, useReducer} from "react";
 import {UsersAction} from "../typings/UsersAction";
 import {IS_LOADING, REQUEST_ERROR, SET_USERS} from "../utils/Constants";
 import {User} from "../typings/User";
@@ -15,6 +15,7 @@ function getURL(role: string): string {
 export async function fetchUsers(role: string = "Customer",
     dispatch: Dispatch<UsersAction>
 ) {
+
     try {
         dispatch({ type: IS_LOADING });
 
