@@ -1,12 +1,13 @@
 import React, {FC} from 'react';
-import {ExpatrioWrapper} from "./ExpatrioWrapper";
-import {ExpatrioHeader} from "../header/ExpatrioHeader";
-import {Dashboard} from "../dashboard/Dashboard";
+import { Dashboard } from '../dashboard/Dashboard';
+import { ExpatrioHeader } from '../header/ExpatrioHeader';
+import { UsersProvider } from '../hooks/UsersProvider';
+
 
 export const ExpatrioInfo: FC = () => {
 
-    return <ExpatrioWrapper>
+    return <UsersProvider>
         <ExpatrioHeader/>
         <Dashboard/>
-    </ExpatrioWrapper>
+    </UsersProvider>
 };

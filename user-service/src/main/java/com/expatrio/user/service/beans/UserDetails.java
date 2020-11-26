@@ -1,5 +1,5 @@
 package com.expatrio.user.service.beans;
-
+ 
 public class User {
     private Long id;
     private String firstName;
