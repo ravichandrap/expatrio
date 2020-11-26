@@ -15,14 +15,10 @@ function getURL(role: string): string {
 export async function fetchUsers(role: string = "Customer",
     dispatch: Dispatch<UsersAction>
 ) {
-
+ 
     try {
         dispatch({ type: IS_LOADING });
-
-        const url = getURL(role);
-        const { data }: AxiosResponse<User[]> = await axios.get(url);
-        console.log(data);
-        console.log("====================")
+        const { data }: AxiosResponse<User[]> = await axios.get(getURL(role));
         dispatch({ type: SET_USERS, users: data });
     } catch (error) {
         dispatch({ type: REQUEST_ERROR, error: error.message });
