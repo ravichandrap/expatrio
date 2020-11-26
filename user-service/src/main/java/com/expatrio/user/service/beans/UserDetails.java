@@ -1,6 +1,6 @@
 package com.expatrio.user.service.beans;
- 
-public class User {
+
+public class UserDetails {
     private Long id;
     private String firstName;
     private String lastName;
@@ -8,9 +8,9 @@ public class User {
     private String password;
     private String phoneNumber;
     private String role;
-    public User(){}
+    public UserDetails(){}
 
-    public User(Long id, String firstName, String lastName, String email, String phoneNumber) {
+    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
