@@ -1,10 +1,9 @@
 import React, {FC, useContext} from 'react';
-import {Users} from "../body/list/Users";
+import {DisplayUsers} from "../body/list/DisplayUsers";
 import {CreateUser} from "../body/create/CreateUser";
 import {UserLogin} from "../body/login/UserLogin";
-import { useUsers } from '../hooks/useUsers';
 import { UsersContext } from '../hooks/UsersProvider';
-import { LOGIN_PAGE, CREATE_USER_PAGE } from '../utils/Constants';
+import { LOGIN_PAGE, CREATE_USER_PAGE, USERS_PAGE } from '../utils/Constants';
 
 
 export const Dashboard: FC = () => {
@@ -22,6 +21,8 @@ const loadCurrentPage = (currentPage:string ) => {
             return <UserLogin/>;
         case CREATE_USER_PAGE:
             return <CreateUser/>
+        case USERS_PAGE:
+            return <DisplayUsers/>
         default:
             return <UserLogin/>
     }

@@ -7,8 +7,10 @@ export function getUserInitialState() : UsersState {
         users:[],
         isLoading: false,
         user: {} as User,
+        editUser: {} as User,
         error: null,
         inputErrorMessage:'',
-        currentPage: LOGIN_PAGE
+        currentPage: LOGIN_PAGE, 
+        message: ""
     }
 }

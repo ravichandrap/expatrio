@@ -1,19 +1,44 @@
-import React, {FC} from 'react';
+import React, {FC, useContext, useState} from 'react';
+import { UsersContext } from '../../hooks/UsersProvider';
+import { User } from '../../typings/User';
 
-export const UserLogin: FC = () => {
+export const UserLogin: FC = () => { 
 //style="background-color:#f1f1f1"
+
+const {LoginUser, error} = useContext(UsersContext);
+    const [user, setUser] = useState({} as User);
+
+    const updateLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setUser({
+            ...user,
+            [name]: value
+        })
+    }
+
     return <div className="create-user">
-        <form action="/action_page.php" method="post">
             <div className="container">
                 <h1>Login Form</h1>
-                <p>Please enter login details.</p>
+                <p>{error?.message}</p>
+                
                 <hr/>
-                <label htmlFor="uname"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="uname" required/>
-                    <label htmlFor="psw"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw" required/>
-                        <button type="submit" className="registerbtn">Login</button>
+
+                <label htmlFor="uname"><b>E-Mail</b></label>
+                <input type="text" 
+                    name="email" 
+                    id="firstName" 
+                    value={user.email}
+                    onChange={updateLogin}/>
+
+                <label htmlFor="psw"><b>Password</b></label>
+                <input type="password" 
+                        name="password" 
+                        id="password" 
+                        value={user.password}
+                        onChange={updateLogin}/>
+                
+                <button type="submit" className="registerbtn"
+                onClick={()=>LoginUser(user.email, user.password)}>Login</button>
             </div>
-        </form>
     </div>
 };

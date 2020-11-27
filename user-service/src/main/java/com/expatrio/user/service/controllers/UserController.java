@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -16,7 +18,12 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDetails> login(@RequestBody UserDetails userDetails) {
-        logger.info("===== login =======");
+        userDetails.setFirstName("Ravichandra");
+        userDetails.setLastName("Reddy");
+        userDetails.setRole("Admin");
+        userDetails.setId(10L);
+        userDetails.setPhoneNumber("202020202");
+        logger.info("===== login =======", userDetails.toString());
         return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
     }
 
@@ -53,9 +60,13 @@ public class UserController {
     @GetMapping("/role/{role}")
     public List<UserDetails> getAllUsersByRole(@PathVariable String role) {
         logger.info("===== getAllUsersByRole =======");
-        UserDetails userDetails = new UserDetails();
-        userDetails.setRole(role);
-        return List.of(userDetails);
+
+        List<UserDetails> users = new ArrayList<>(10);
+        IntStream.range(1,10).forEach(i->{
+            users.add(new UserDetails((long) i,"First-"+i,
+                    "Last-"+i,"Email-"+i,"Phone number ===>"+i, "role:"+i));
+        });
+        return users;
     }
 
     @GetMapping("/{id}/role/{role}")

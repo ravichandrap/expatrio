@@ -7,8 +7,6 @@ export const UsersContext = createContext({} as UsersScheme);
 
 export const UsersProvider:FC = ({children}) => {
     const state = useUsers();
-    console.log(state+"<----------");
-    
     
     return (<UsersContext.Provider value={state}>
         {children}

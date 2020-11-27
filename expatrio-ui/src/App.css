@@ -95,12 +95,20 @@
 
 .users-list .odd {
     background-color: #dddddd;
-    padding: 20px;
+    
 }
 
 .users-list .even {
     background-color: aliceblue;
-    padding: 20px;
+}
+
+.even, .odd{
+    height: 50px;
+    margin: 20px;
+}
+
+.even button, .odd button {
+    margin: 5px;
 }
 
 .create-user {
@@ -166,8 +174,70 @@ hr {
     opacity: 0.9;
 }
 
+.users-hide {
+    display: block;
+}
+
+.message {
+    background-color: #deeeec;
+    color: #195adc;
+    text-align: center;
+    font-weight: bold;
+}
+
+.filter-btn {
+    background-color: #4c77af;
+    color: white;
+    padding: 10px;
+    margin: 8px 8px 20px 8px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.filter-btn:hover {
+    opacity: 1;
+    font-weight: bold;
+}
+
 .registerbtn:hover {
     opacity: 1;
+    font-weight: bold;
+}
+
+.users-head {
+    background-color: #6b8f99;
+}
+
+.editbtn {
+    background-color:rgb(255, 174, 0);
+    color: white;
+    padding: 5px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+
+}
+
+.editbtn:hover {
+    opacity: 1;
+    font-weight: bold;   
+}
+
+.deletebtn {
+    background-color:rgb(245, 90, 19);
+    color: white;
+    padding: 5px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.deletebtn:hover {
+    opacity: 1;
+    font-weight: bold;   
 }
 
 /* Add a blue text color to links */

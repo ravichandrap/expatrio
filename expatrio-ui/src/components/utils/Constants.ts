@@ -1,3 +1,4 @@
+export const SET_USER = 'users/SET_USER';
 export const SET_USERS = 'users/SET_USERS';
 export const IS_LOADING = 'expatrio/IS_LOADING';
 
@@ -9,3 +10,6 @@ export const LOGIN_PAGE = 'users/LOGIN_PAGE';
 export const USERS_PAGE = 'users/USERS_PAGE';
 export const CREATE_USER_PAGE = 'users/CREATE_USER_PAGE';
 export const DASHBOARD_PAGE = 'users/DASHBOARD_PAGE';
+export const LOG_OUT = "users/LOG_OUT"
+export const EDIT_USER = "users/EDIT_USER";
+export const SET_MESSAGE = "users/SET_MESSAGE";
