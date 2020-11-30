@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -66,8 +68,11 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDetails> getAll() {
+    public List<UserDetails> getAll(@RequestHeader(name = "Authorization") String token,
+                                    HttpServletResponse response) {
         logger.info("===== getAllUsersByRole =======");
+        response.addHeader("Authorization", token);
+
         return service.get();
     }
 
@@ -76,5 +81,11 @@ public class UserController {
 //
 //        return new ResponseEntity(HttpStatus.OK);
 //    }
+
+    @GetMapping("/http-servlet-response")
+    public String usingHttpServletResponse(HttpServletResponse response) {
+        response.addHeader("Baeldung-Example-Header", "Value-HttpServletResponse");
+        return "Response with header using HttpServletResponse";
+    }
 
 }
