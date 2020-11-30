@@ -1,83 +1,80 @@
 package com.expatrio.user.service.controllers;
 
 import com.expatrio.user.service.beans.UserDetails;
+import com.expatrio.user.service.service.UserService;
+import com.expatrio.user.service.util.WebClientAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
     static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @PostMapping("/login")
-    public ResponseEntity<UserDetails> login(@RequestBody UserDetails userDetails) {
-        userDetails.setFirstName("Ravichandra");
-        userDetails.setLastName("Reddy");
-        userDetails.setRole("Admin");
-        userDetails.setId(10L);
-        userDetails.setPhoneNumber("202020202");
-        logger.info("===== login =======", userDetails.toString());
-        return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
+    @Autowired
+    WebClientAPI webClientAPI;
+
+    @Autowired
+    UserService service;
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDetails> get(@RequestHeader(name = "jwt") String jwtId,
+                                           @PathVariable String email) {
+        logger.info("===== get with email: {} =======", email);
+
+        UserDetails user = service.getByEmail(email);
+        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<UserDetails> getById(@RequestHeader(name = "jwt") String jwtId,
+                                               @PathVariable Long id) {
+        logger.info("===== get with id: {} =======", id);
+        UserDetails user = service.get(id);
+        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
     @PostMapping
-    public ResponseEntity<UserDetails> create(@RequestBody UserDetails userDetails) {
+    public ResponseEntity<UserDetails> create(@RequestHeader(name = "jwt") String jwtId,
+                                              @RequestBody UserDetails userDetails) {
         logger.info("===== create =======");
-        return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(service.save(userDetails), HttpStatus.ACCEPTED);
     }
 
     @PutMapping
-    public List<UserDetails> update(@RequestBody UserDetails userDetails) {
+    public ResponseEntity<UserDetails> update(@RequestHeader(name = "jwt") String jwtId,
+                                              @RequestBody UserDetails userDetails) {
         logger.info("===== update =======");
-        return List.of(userDetails);
+        return new ResponseEntity<>(service.save(userDetails), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
-    public List<UserDetails> delete(@PathVariable Long id) {
-        logger.info("===== delete =======");
-        UserDetails userDetails = new UserDetails();
-        userDetails.setId(id);
-        return List.of(userDetails);
-    }
-
-    @DeleteMapping("/{id}/role/{role}")
-    public List<UserDetails> deleteByRole(@PathVariable Long id,
-                                          @PathVariable String role) {
-        logger.info("===== deleteByRole =======");
-        UserDetails userDetails = new UserDetails();
-        userDetails.setId(id);
-        userDetails.setRole(role);
-        return List.of(userDetails);
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 
     @GetMapping("/role/{role}")
-    public List<UserDetails> getAllUsersByRole(@PathVariable String role) {
+    public List<UserDetails> getAllUsersByRole(@RequestHeader(name = "jwt") String jwtId, @PathVariable String role) {
         logger.info("===== getAllUsersByRole =======");
-
-        List<UserDetails> users = new ArrayList<>(10);
-        IntStream.range(1,10).forEach(i->{
-            users.add(new UserDetails((long) i,"First-"+i,
-                    "Last-"+i,"Email-"+i,"Phone number ===>"+i, "role:"+i));
-        });
-        return users;
+        return service.getByRole(role);
     }
 
-    @GetMapping("/{id}/role/{role}")
-    public List<UserDetails> getUserByRole(@PathVariable Long id,
-                                           @PathVariable String role) {
-        logger.info("===== getUserByRole =======");
-        UserDetails userDetails = new UserDetails();
-        userDetails.setRole(role);
-        userDetails.setId(id);
-        return List.of(userDetails);
+    @GetMapping
+    public List<UserDetails> getAll() {
+        logger.info("===== getAllUsersByRole =======");
+        return service.get();
     }
 
+//    @PostMapping("/login")
+//    public String login(@RequestBody UserDetails userDetails) {
+//
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 
 }

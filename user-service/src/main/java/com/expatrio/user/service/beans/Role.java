@@ -1,9 +1,9 @@
 package com.expatrio.user.service.beans;
 
 public enum  Role {
-    USER("User"),
-    CUSTOMER("Customer"),
-    ADMIN("Admin");
+    USER("ROLE_User"),
+    CUSTOMER("ROLE_Customer"),
+    ADMIN("ROLE_Admin");
     private String value;
 
     Role(String role) {
