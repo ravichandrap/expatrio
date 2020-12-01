@@ -17,7 +17,7 @@ public class WebClientAPI {
     private static final HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
     private Gson gson = new Gson();
 
-    @Value("${uri.api.user-api-service}")
+    //@Value("${uri.api.user-api-service}")
     String userAPIURL;
 
     public UserDetails getUserFromUserService(String email) throws IOException {

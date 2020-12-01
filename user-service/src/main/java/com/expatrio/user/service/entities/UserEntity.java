@@ -1,10 +1,12 @@
 package com.expatrio.user.service.entities;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity(name = "user")
 public class UserEntity {
-
+    public UserEntity(){}
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -15,7 +17,26 @@ public class UserEntity {
     private String email;
     private String password;
     private String phoneNumber;
-    private String role;
+
+    public UserEntity(String firstName,
+                      String lastName,
+                      String email,
+                      String password,
+                      String phoneNumber,
+                      Set<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.roles = roles;
+    }
+
+    @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
@@ -65,14 +86,11 @@ public class UserEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
-
-
-
 }

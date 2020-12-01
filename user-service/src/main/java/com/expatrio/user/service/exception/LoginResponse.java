@@ -1,5 +1,6 @@
-package com.expatrio.user.service.beans;
+package com.expatrio.user.service.exception;
 
+import com.expatrio.user.service.entities.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
 

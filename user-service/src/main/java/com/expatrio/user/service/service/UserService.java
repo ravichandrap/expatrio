@@ -1,6 +1,8 @@
 package com.expatrio.user.service.service;
 
+import com.expatrio.user.service.beans.UserProfile;
 import com.expatrio.user.service.entities.UserEntity;
+import com.expatrio.user.service.exception.InvalidCredentialsException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,10 +35,8 @@ public class UserService {
         return getUserDetails(optional);
     }
 
-
-
     private UserDetails getUserDetails(Optional<UserEntity> optional) {
-        UserEntity user = optional.get();
+        UserEntity user = optional.orElseThrow(()->new InvalidCredentialsException("Not Found"));
         return getUserDetails(user);
     }
 
@@ -57,10 +57,14 @@ public class UserService {
     }
 
     public List<UserDetails> getByRole(String role) {
-        return getCollectUserDetails(repository.findByRole(role));
+        return getCollectUserDetails(repository.findByRoles(role));
     }
 
     private List<UserDetails> getCollectUserDetails(List<UserEntity> users) {
         return users.stream().map(this::getUserDetails).collect(Collectors.toList());
+    }
+
+    public UserDetails validate(UserProfile userProfile) {
+        return getUserDetails(repository.findByEmailAndPassword(userProfile.getUsername(), userProfile.getPassword()));
     }
 }

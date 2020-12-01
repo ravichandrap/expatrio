@@ -1,6 +1,5 @@
 package com.expatrio.user.service.exception;
 
-import com.expatrio.user.service.beans.LoginResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +37,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ InvalidCredentialsException.class })
 	public ResponseEntity<Object> handleInvalidCredentialsException(Exception ex, WebRequest request) {
-		return new ResponseEntity<Object>("Invalid Credentials please try again with valid credentials", new HttpHeaders(), HttpStatus.FORBIDDEN);
+		ErrorResponse errors = new ErrorResponse();
+		errors.setErrorCode(String.valueOf(HttpStatus.UNAUTHORIZED));
+		errors.setDescription("User or Password are incorrect!");
+		errors.setStatus(HttpStatus.UNAUTHORIZED);
+		errors.setTimestamp(LocalDateTime.now());
+
+		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
 }

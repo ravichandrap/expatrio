@@ -1,7 +1,8 @@
 package com.expatrio.auth.controller;
 
-import com.expatrio.auth.beans.AuthenticationResponse;
-import com.expatrio.auth.beans.UserProfile;
+import com.expatrio.auth.beans.AuthRequest;
+import com.expatrio.auth.beans.AuthResponse;
+import com.expatrio.auth.exception.UserNotFoundRuntimeException;
 import com.expatrio.auth.util.JwtUtil;
 import com.expatrio.auth.util.WebClientAPI;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 public class AuthServiceController {
@@ -22,70 +25,24 @@ public class AuthServiceController {
     @Autowired
     WebClientAPI webClientAPI;
 
-    @RequestMapping(value = "/loginone", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest user) throws Exception {
+    @PostMapping("/creartetoken")
+    public ResponseEntity<AuthResponse> create(@RequestBody AuthRequest user) throws IOException, InterruptedException {
         logger.debug("AuthenticationRequest: {} ", user);
-        UserProfile userProfile = null;
-        try {
-            userProfile = webClientAPI.getUserFromUserService(user.getUsername());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex.getMessage());
-        }
-
-        final String jwt = jwtTokenUtil.generateToken(userProfile);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        AuthRequest userProfile = webClientAPI.validate(user);
+        final String jwt = jwtTokenUtil.generateToken(userProfile.getUsername());
+        return ResponseEntity.ok(new AuthResponse(jwt, userProfile));
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<Boolean> validateLoginToken(@RequestHeader(name = "Authorization") String jwt,
-                                                      @RequestBody ValidateUser ValidateUser) {
-        return new ResponseEntity<>(jwtTokenUtil.validateToken(jwt, ValidateUser.getEmail()), HttpStatus.OK);
-    }
+    public ResponseEntity<Boolean> validateLoginToken(@RequestHeader(name = "Authorization") String jwt)
+            throws IOException, InterruptedException {
+        final String username = jwtTokenUtil.extractUsername(jwt);
 
-}
-class AuthRequest {
-    private String username;
-    private String password;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        if (webClientAPI.getUserFromUserService(username)) {
+            return new ResponseEntity<>(jwtTokenUtil.validateToken(jwt, username), HttpStatus.OK);
+        } else {
+            throw new UserNotFoundRuntimeException(username);
+        }
     }
 }
 
-class ValidateUser {
-    private String jwt;
-    private String email;
-
-    public ValidateUser(String jwt, String email) {
-        this.jwt = jwt;
-        this.email = email;
-    }
-
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-}

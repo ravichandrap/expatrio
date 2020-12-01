@@ -1,6 +1,7 @@
 package com.expatrio.user.service.controllers;
 
 import com.expatrio.user.service.beans.UserDetails;
+import com.expatrio.user.service.beans.UserProfile;
 import com.expatrio.user.service.service.UserService;
 import com.expatrio.user.service.util.WebClientAPI;
 import org.slf4j.Logger;
@@ -9,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -24,6 +22,22 @@ public class UserController {
 
     @Autowired
     UserService service;
+
+    @PostMapping("/validate")
+    public ResponseEntity<UserDetails> validate(@RequestBody UserProfile userProfile) {
+        logger.info("===== get with email: {} =======", userProfile.toString());
+
+        UserDetails user = service.validate(userProfile);
+        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/validate/email")
+    public ResponseEntity<Boolean> validateByEmail(@RequestBody String email) {
+        logger.info("===== get with email: {} =======", email);
+
+        service.getByEmail(email);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDetails> get(@RequestHeader(name = "jwt") String jwtId,
@@ -68,24 +82,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDetails> getAll(@RequestHeader(name = "Authorization") String token,
-                                    HttpServletResponse response) {
+    public List<UserDetails> getAll() {
         logger.info("===== getAllUsersByRole =======");
-        response.addHeader("Authorization", token);
 
         return service.get();
     }
-
-//    @PostMapping("/login")
-//    public String login(@RequestBody UserDetails userDetails) {
-//
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
-
-    @GetMapping("/http-servlet-response")
-    public String usingHttpServletResponse(HttpServletResponse response) {
-        response.addHeader("Baeldung-Example-Header", "Value-HttpServletResponse");
-        return "Response with header using HttpServletResponse";
-    }
-
 }
