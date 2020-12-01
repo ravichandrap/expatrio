@@ -1,5 +1,7 @@
 package com.expatrio.user.service.beans;
 
+import com.expatrio.user.service.entities.Role;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +10,17 @@ import javax.persistence.Id;
 public class RoleDetails {
     private Long id;
     private String name;
+
+    public RoleDetails(){}
+    public RoleDetails(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public  RoleDetails(Role role) {
+        this.name = role.getName();
+        this.id = role.getId();
+    }
 
     public Long getId() {
         return id;

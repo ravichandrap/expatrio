@@ -1,6 +1,3 @@
-server:
-  port=8081
-
 logging:
   level:
     java: DEBUG
@@ -20,3 +17,5 @@ spring:
       enabled: true
   profiles:
     active: prod
+server:
+  port: 8081

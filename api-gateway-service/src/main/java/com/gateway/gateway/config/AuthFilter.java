@@ -42,22 +42,13 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilterConfig> {
             final boolean authorization = request.getHeaders().containsKey("Authorization");
             log.debug("authorization " + authorization);
 
-            AuthTokenModel authTokenModel = new AuthTokenModel();
             final  String authorizationHeader = request.getHeaders().get("Authorization").get(0);
-            String jwt = null;
-
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                authTokenModel.setToken(authorizationHeader.substring(7));
-                authTokenModel.setType("jwt");
-            }
 
             try {
-                final String newToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYy5yZWRkeUBvdXRsb29rLmNvbSIsImV4cCI6MTYwNjcxMDA3MCwiaWF0IjoxNjA2Njc0MDcwfQ.eSqqswGnVk5_4cNl80iG3gElAhIf-CcDR6BoO4trRzg";
-//                        getAuthorizationToken(authTokenModel.getToken());
-                System.out.println("newToken:::: "+newToken);
-                final ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                        .header("Authorization", "Bearer " + newToken).build();
+                final String newToken = getAuthorizationToken(authorizationHeader);
 
+                final ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                        .header("Authorization", newToken).build();
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -76,7 +67,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilterConfig> {
     HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build();
 
     private String getAuthorizationToken(final String token) throws InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(URI.create(authServiceUrl))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(authServiceUrl+"/api/v1/auth/validate")).setHeader("content-type", "application/json")
                 .header("Authorization", token).build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

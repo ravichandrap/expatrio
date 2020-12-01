@@ -1,5 +1,9 @@
 package com.expatrio.user.service.beans;
 
+import org.springframework.data.annotation.Transient;
+
+import java.util.Set;
+
 public class UserDetails {
     private Long id;
     private String firstName;
@@ -7,16 +11,16 @@ public class UserDetails {
     private String email;
     private String password;
     private String phoneNumber;
-    private String role;
+    private Set<RoleDetails> roles;
     public UserDetails(){}
 
-    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, String role) {
+    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, Set<RoleDetails> role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.role = role;
+        this.roles = role;
     }
 
     public Long getId() {
@@ -67,24 +71,13 @@ public class UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getRole() {
-        return role;
+    public Set<RoleDetails> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<RoleDetails> roles) {
+        this.roles = roles;
     }
 
-    @Override
-    public String toString() {
-        return "UserDetails{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", role='" + role + '\'' +
-                '}';
-    }
+  
 }

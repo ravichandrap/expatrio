@@ -33,17 +33,19 @@ public class ApiGatewayServiceApplication {
 
 	@Bean
 	public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
-//		return builder.routes()
-//				.route(r-> r.path("/api/v1/authenticate/**").uri(authService))
-//				.route(r -> r.path("/api/v1/user/**").uri(userService))
-//				.build();
-
-		return builder.routes().route(firstServiceRouting()).build();
+		return builder
+				.routes()
+				.route(authRouting())
+				.route(userServiceRouting())
+				.build();
 	}
 
+	private Function<PredicateSpec, Buildable<Route>> authRouting() {
+		return r -> r.path("/api/v1/auth/**").uri(authService);
+	}
 
-	private final Function<PredicateSpec, Buildable<Route>> firstServiceRouting() {
-		return r -> r.path("/api/v1/login/**").uri(authService);
-//				.filters(f -> f.filter(authFilter.apply(new AuthFilterConfig()))).uri(authService);
+	private Function<PredicateSpec, Buildable<Route>> userServiceRouting() {
+		return r -> r.path("/api/v1/user/**")
+				.filters(f -> f.filter(authFilter.apply(new AuthFilterConfig()))).uri(authService);
 	}
 }

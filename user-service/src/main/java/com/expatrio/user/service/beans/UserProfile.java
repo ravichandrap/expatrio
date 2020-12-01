@@ -1,15 +1,17 @@
 package com.expatrio.user.service.beans;
 
 public class UserProfile {
-    private String username;
+    private String email;
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
-    public void setUsername(String username) {
-        this.username = username;
+
+    public void setEmail(String email) {
+        this.email = email;
     }
+
     public String getPassword() {
         return password;
     }
@@ -20,7 +22,7 @@ public class UserProfile {
     @Override
     public String toString() {
         return "UserProfile{" +
-                "username='" + username + '\'' +
+                "username='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

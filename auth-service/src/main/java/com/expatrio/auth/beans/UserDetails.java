@@ -1,46 +1,23 @@
-package com.expatrio.user.service.entities;
+package com.expatrio.auth.beans;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
-
-import javax.persistence.*;
-import java.util.Set;
-
-@Entity(name = "user")
-public class UserEntity {
-    public UserEntity(){}
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class UserDetails {
     private Long id;
     private String firstName;
     private String lastName;
-    @Column(unique = true)
     private String email;
     private String password;
     private String phoneNumber;
+    private String role;
+    public UserDetails(){}
 
-    @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
-
-
-    public UserEntity(String firstName,
-                      String lastName,
-                      String email,
-                      String password,
-                      String phoneNumber,
-                      Set<Role> roles) {
+    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, String role) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.phoneNumber = phoneNumber;
-        this.roles = roles;
+        this.role = role;
     }
-
 
     public Long getId() {
         return id;
@@ -90,11 +67,24 @@ public class UserEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDetails{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

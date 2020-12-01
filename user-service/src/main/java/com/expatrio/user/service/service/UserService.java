@@ -1,6 +1,8 @@
 package com.expatrio.user.service.service;
 
+import com.expatrio.user.service.beans.RoleDetails;
 import com.expatrio.user.service.beans.UserProfile;
+import com.expatrio.user.service.entities.Role;
 import com.expatrio.user.service.entities.UserEntity;
 import com.expatrio.user.service.exception.InvalidCredentialsException;
 import org.springframework.beans.BeanUtils;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.expatrio.user.service.beans.UserDetails;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +46,12 @@ public class UserService {
     private UserDetails getUserDetails(UserEntity user) {
         UserDetails userDetails = new UserDetails();
         BeanUtils.copyProperties(user, userDetails);
+        userDetails.setRoles(copyRoles(user.getRoles()));
         return userDetails;
+    }
+
+    private Set<RoleDetails> copyRoles(Set<Role> roles) {
+        return roles.stream().map(RoleDetails::new).collect(Collectors.toSet());
     }
 
     private UserEntity getUserDetails(UserDetails user) {
@@ -65,6 +73,6 @@ public class UserService {
     }
 
     public UserDetails validate(UserProfile userProfile) {
-        return getUserDetails(repository.findByEmailAndPassword(userProfile.getUsername(), userProfile.getPassword()));
+        return getUserDetails(repository.findByEmailAndPassword(userProfile.getEmail(), userProfile.getPassword()));
     }
 }

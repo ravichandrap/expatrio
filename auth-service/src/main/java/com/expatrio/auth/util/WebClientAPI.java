@@ -1,6 +1,7 @@
 package com.expatrio.auth.util;
 
 import com.expatrio.auth.beans.AuthRequest;
+import com.expatrio.auth.beans.UserDetails;
 import com.expatrio.auth.exception.UserNotFoundRuntimeException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,37 +25,38 @@ public class WebClientAPI {
     public Boolean getUserFromUserService(String email) throws IOException, InterruptedException {
 
         final HttpRequest request = getHttpRequest(email);
+
         final HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            if(response.statusCode() != HttpStatus.NOT_FOUND.value()
-                || response.statusCode() != HttpStatus.UNAUTHORIZED.value()) {
+            if(response.statusCode() == HttpStatus.NOT_FOUND.value()
+                || response.statusCode() == HttpStatus.UNAUTHORIZED.value()) {
                 throw new UserNotFoundRuntimeException(email);
             }
-            return new GsonBuilder().create().fromJson(response.body(), Boolean.class);
+            return true;
     }
 
     private HttpRequest getHttpRequest(AuthRequest user) {
-        return HttpRequest.newBuilder(URI.create(userServiceURL + "/validate/"))
+        return HttpRequest.newBuilder(URI.create(userServiceURL + "/validate/")).setHeader("content-type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(new GsonBuilder().create().toJson(user))).build();
     }
 
     private HttpRequest getHttpRequest(String email) {
         return HttpRequest.newBuilder(URI.create(userServiceURL + "/validate/email/"))
-                .POST(HttpRequest.BodyPublishers.ofString(new GsonBuilder().create().toJson(email))).build();
+                .POST(HttpRequest.BodyPublishers.ofString(email)).build();
     }
 
-    public AuthRequest validate(AuthRequest user) throws IOException, InterruptedException {
+    public UserDetails validate(AuthRequest user) throws IOException, InterruptedException {
 
         final HttpRequest request = getHttpRequest(user);
         final HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if(response.statusCode() != HttpStatus.NOT_FOUND.value()
-                || response.statusCode() != HttpStatus.UNAUTHORIZED.value()) {
-            throw new UserNotFoundRuntimeException(user.getPassword());
+        if(response.statusCode() == HttpStatus.NOT_FOUND.value()
+                || response.statusCode() == HttpStatus.UNAUTHORIZED.value()) {
+            throw new UserNotFoundRuntimeException(user.getEmail());
         }
-        return new GsonBuilder().create().fromJson(response.body(), AuthRequest.class);
+        return new GsonBuilder().create().fromJson(response.body(), UserDetails.class);
     }
 
 }
