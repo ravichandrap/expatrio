@@ -46,6 +46,7 @@ public class ApiGatewayServiceApplication {
 
 	private Function<PredicateSpec, Buildable<Route>> userServiceRouting() {
 		return r -> r.path("/api/v1/user/**")
-				.filters(f -> f.filter(authFilter.apply(new AuthFilterConfig()))).uri(authService);
+				.filters(f -> f.filter(authFilter.apply(new AuthFilterConfig())))
+				.uri(userService);
 	}
 }

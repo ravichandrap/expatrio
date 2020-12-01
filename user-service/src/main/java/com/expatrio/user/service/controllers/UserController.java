@@ -82,8 +82,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDetails> getAll() {
-        logger.info("===== getAllUsersByRole =======");
+    public List<UserDetails> getAll(@RequestHeader(name = "Authorization") String jwt) {
+        logger.info("===== getAllUsersByRole =======::::{}", jwt);
 
         return service.get();
     }
