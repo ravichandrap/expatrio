@@ -27,7 +27,7 @@ public class AuthServiceController {
     @Autowired
     WebClientAPI webClientAPI;
 
-    @PostMapping("/create")
+    @PostMapping("/loginuser")
     public ResponseEntity<AuthResponse> create(@RequestBody AuthRequest user) throws IOException, InterruptedException {
         logger.debug("AuthenticationRequest: {} ", user);
         UserDetails userProfile = webClientAPI.validate(user);

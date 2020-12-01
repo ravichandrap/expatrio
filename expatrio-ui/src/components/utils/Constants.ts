@@ -11,5 +11,7 @@ export const USERS_PAGE = 'users/USERS_PAGE';
 export const CREATE_USER_PAGE = 'users/CREATE_USER_PAGE';
 export const DASHBOARD_PAGE = 'users/DASHBOARD_PAGE';
 export const LOG_OUT = "users/LOG_OUT"
+export const LOG_IN = "users/LOG_IN"
 export const EDIT_USER = "users/EDIT_USER";
 export const SET_MESSAGE = "users/SET_MESSAGE";
+export const CLEAN = "users/CLEAN";

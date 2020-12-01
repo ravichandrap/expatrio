@@ -2,7 +2,7 @@ import { useReducer } from 'react';
 import {UsersScheme} from "../typings/UsersScheme";
 import {getUserInitialState} from "../utils/getUserInitialState";
 import {User} from "../typings/User";
-import {fetchUsers, loginUser, updateUser, deleteUser} from "../api/APIService";
+import {fetchAllUsers, loginUser, updateUser, deleteUser} from "../api/APIService";
 import {userReducer} from "./reducer/userReducer";
 import { CURRENT_PAGE, EDIT_USER, LOG_OUT } from '../utils/Constants';
  
@@ -17,7 +17,7 @@ export function useUsers(): UsersScheme {
             updateUser(newUser, dispatch);
         },
         GetUsers(role: string) {
-            fetchUsers(role, dispatch)
+            fetchAllUsers(state.authorization, dispatch)
         },
         SetCurrentPage(currentPage: string) {
             dispatch({type: CURRENT_PAGE, page: currentPage})
@@ -33,6 +33,12 @@ export function useUsers(): UsersScheme {
         },
         DeleteUser(id: string) {
             deleteUser(id, dispatch)
+        },
+        Cleanup(){
+
+        }, 
+        GetAllUsers(){
+            
         }
     }
 }

@@ -53,11 +53,15 @@ public class UserService {
     private Set<RoleDetails> copyRoles(Set<Role> roles) {
         return roles.stream().map(RoleDetails::new).collect(Collectors.toSet());
     }
+    private Set<Role> copyRolesFromRoleDetails(Set<RoleDetails> roles) {
+        return roles.stream().map(RoleDetails::of).collect(Collectors.toSet());
+    }
 
     private UserEntity getUserDetails(UserDetails user) {
-        UserEntity userDetails = new UserEntity();
-        BeanUtils.copyProperties(user, userDetails);
-        return userDetails;
+        UserEntity entity = new UserEntity();
+        BeanUtils.copyProperties(user, entity);
+        entity.setRoles(copyRolesFromRoleDetails(user.getRoles()));
+        return entity;
     }
 
     public List<UserDetails> get() {

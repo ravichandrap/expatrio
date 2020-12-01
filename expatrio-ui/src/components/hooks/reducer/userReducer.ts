@@ -11,17 +11,12 @@ import {
     LOG_OUT,
     EDIT_USER,
     CREATE_USER_PAGE,
-    SET_MESSAGE
+    SET_MESSAGE,
+    LOG_IN
 } from "../../utils/Constants";
 import { User } from "../../typings/User";
 
 export function userReducer(state: UsersState, action: UsersAction): UsersState {
-
-    state = {
-        ...state,
-        message: "",
-        editUser: {} as User
-    }
 
     switch (action.type) {
         case REQUEST_ERROR:
@@ -66,6 +61,14 @@ export function userReducer(state: UsersState, action: UsersAction): UsersState 
             return {
                 ...state,
                 message: action.message
+            }
+
+        case LOG_IN: 
+            return {
+                ...state,
+                authorization: action.authorization,
+                user: action.user,
+                currentPage: USERS_PAGE
             }
             
         default:

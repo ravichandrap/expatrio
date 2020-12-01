@@ -5,7 +5,7 @@ import { LOGIN_PAGE } from "./Constants";
 export function getUserInitialState() : UsersState {
     return {
         users:[],
-        jwt:"",
+        authorization:"",
         isLoading: false,
         user: {} as User,
         editUser: {} as User,

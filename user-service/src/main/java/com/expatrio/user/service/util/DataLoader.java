@@ -45,6 +45,8 @@ public class DataLoader implements ApplicationRunner {
                 adminRoles
         ));
 
+//        userRoles = new HashSet<>(1);
+//        adminRoles.add(new Role(20L,"Admin"));
 //        userRepository.save(new UserEntity(
 //                "shobha",
 //                "Reddy",

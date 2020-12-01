@@ -6,7 +6,10 @@ export const UserLogin: FC = () => {
 //style="background-color:#f1f1f1"
 
 const {LoginUser, error} = useContext(UsersContext);
-    const [user, setUser] = useState({} as User);
+    const [user, setUser] = useState({
+        email:"rc.srAVAN@outlook.com",
+        password:"test1234"
+    } as User);
 
     const updateLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;

@@ -1,20 +1,20 @@
 package com.expatrio.auth.beans;
 
 public class AuthResponse {
-    private String jwt;
+    private String authorization;
     private UserDetails user;
 
-    public AuthResponse(String jwt, UserDetails user) {
-        this.jwt = jwt;
+    public AuthResponse(String authorization, UserDetails user) {
+        this.authorization = authorization;
         this.user = user;
     }
 
-    public String getJwt() {
-        return jwt;
+    public String getAuthorization() {
+        return authorization;
     }
 
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 
     public UserDetails getUser() {

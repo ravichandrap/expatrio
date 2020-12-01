@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -25,48 +26,50 @@ public class UserController {
 
     @PostMapping("/validate")
     public ResponseEntity<UserDetails> validate(@RequestBody UserProfile userProfile) {
-        logger.info("===== get with email: {} =======", userProfile.toString());
+        logger.info("===== get with email: Authorization:{} =======", userProfile.toString());
 
         UserDetails user = service.validate(userProfile);
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/validate/email")
-    public ResponseEntity<Boolean> validateByEmail(@RequestBody String email) {
-        logger.info("===== get with email: {} =======", email);
+    public ResponseEntity<Boolean> validateByEmail(@RequestHeader(name = "Authorization") String jwtId,
+                                                   @RequestBody String email) {
+        logger.info("===== get with email: Authorization:{} =======", email);
 
         service.getByEmail(email);
         return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserDetails> get(@RequestHeader(name = "jwt") String jwtId,
+    public ResponseEntity<UserDetails> get(@RequestHeader(name = "Authorization") String jwtId,
                                            @PathVariable String email) {
-        logger.info("===== get with email: {} =======", email);
+        logger.info("===== get with email: {}: Authorization:{} =======", email, jwtId);
 
         UserDetails user = service.getByEmail(email);
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDetails> getById(@RequestHeader(name = "jwt") String jwtId,
+    public ResponseEntity<UserDetails> getById(@RequestHeader(name = "Authorization") String jwtId,
                                                @PathVariable Long id) {
-        logger.info("===== get with id: {} =======", id);
+        logger.info("===== get with id: {} : Authorization:{}=======", id, jwtId);
         UserDetails user = service.get(id);
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
     @PostMapping
-    public ResponseEntity<UserDetails> create(@RequestHeader(name = "jwt") String jwtId,
+    public ResponseEntity<UserDetails> create(@RequestHeader(name = "Authorization") String jwtId,
                                               @RequestBody UserDetails userDetails) {
-        logger.info("===== create =======");
+        logger.info("===== PostMapping Update User =======Authorization:{}", jwtId);
+
         return new ResponseEntity<>(service.save(userDetails), HttpStatus.ACCEPTED);
     }
 
     @PutMapping
-    public ResponseEntity<UserDetails> update(@RequestHeader(name = "jwt") String jwtId,
+    public ResponseEntity<UserDetails> update(@RequestHeader(name = "Authorization") String jwtId,
                                               @RequestBody UserDetails userDetails) {
-        logger.info("===== update =======");
+        logger.info("===== update : Authorization:{}=======", jwtId);
         return new ResponseEntity<>(service.save(userDetails), HttpStatus.ACCEPTED);
     }
 
@@ -76,15 +79,44 @@ public class UserController {
     }
 
     @GetMapping("/role/{role}")
-    public List<UserDetails> getAllUsersByRole(@RequestHeader(name = "jwt") String jwtId, @PathVariable String role) {
-        logger.info("===== getAllUsersByRole =======");
+    public List<UserDetails> getAllUsersByRole(@RequestHeader(name = "Authorization") String jwtId, @PathVariable String role) {
+        logger.info("===== getAllUsersByRole Authorization:{}=======", jwtId);
         return service.getByRole(role);
     }
 
     @GetMapping
-    public List<UserDetails> getAll(@RequestHeader(name = "Authorization") String jwt) {
-        logger.info("===== getAllUsersByRole =======::::{}", jwt);
+    public UserDetailsResponse getAll(@RequestHeader(name = "Authorization") String authorization) {
+        logger.info("===== getAllUsersByRole =======::::Authorization: {}", authorization);
+        return UserDetailsResponse.of(authorization, service.get());
+    }
+}
 
-        return service.get();
+class UserDetailsResponse {
+    private String authorization;
+    private List<UserDetails> users;
+
+    public UserDetailsResponse(String authorization, List<UserDetails> users) {
+        this.authorization = authorization;
+        this.users = users;
+    }
+
+    public static UserDetailsResponse of(String authorization, List<UserDetails> users) {
+        return new UserDetailsResponse(authorization, users);
+    }
+
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
+    }
+
+    public List<UserDetails> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserDetails> users) {
+        this.users = users;
     }
 }
