@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -44,5 +45,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errors.setTimestamp(LocalDateTime.now());
 
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler({ UserForbidden.class })
+	public ResponseEntity<Object> userForbidden(Exception ex, WebRequest request) {
+		ErrorResponse errors = new ErrorResponse();
+		errors.setErrorCode(String.valueOf(HttpStatus.FORBIDDEN));
+		errors.setDescription("User do not have valid permissions");
+		errors.setStatus(HttpStatus.FORBIDDEN);
+		errors.setTimestamp(LocalDateTime.now());
+
+		return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
 	}
 }

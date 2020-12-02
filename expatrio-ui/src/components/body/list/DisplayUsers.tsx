@@ -36,7 +36,7 @@ export const DisplayUsers: FC = () => {
             <tr>
                 <td>
                 <select onChange={selectRole}>
-                    <option>Select Role</option>
+                    <option>All</option>
                     <option selected={role === "Admin"}>Admin</option>
                     <option selected={role === "Customer"}>Customer</option>
                     <option selected={role === "User"}>User</option>

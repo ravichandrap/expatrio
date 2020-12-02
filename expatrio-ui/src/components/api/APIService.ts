@@ -35,6 +35,8 @@ export async function loginUser(email: string, password: string, dispatch: Dispa
                                         urlUtil().LOGIN_URL, 
                                         { email: email, password: password }
                                     );
+                                    console.log("data, status, statusText:  ", data, status, statusText);
+                                    
        if(status === 200 ) {
         dispatch({
             type: LOG_IN,
@@ -47,7 +49,7 @@ export async function loginUser(email: string, password: string, dispatch: Dispa
         
     } catch (error) {
         console.log(error);
-        dispatch({ type: REQUEST_ERROR, error: error });
+        dispatch({ type: SET_MESSAGE, message: "User does not have crediantals!"});
     }
 }
 
@@ -63,14 +65,16 @@ export async function fetchUsers(role: string = "Customer",
         }
 }
 
-export async function fetchAllUsers(authorization: string,
-        dispatch: Dispatch<UsersAction>
+export async function fetchAllUsers(
+                role: string,
+                authorization: string,
+                dispatch: Dispatch<UsersAction>
     ) {
         try {
             dispatch({ type: IS_LOADING });
             const { data }: AxiosResponse<AllUserResponse> = 
                         await axios.get(
-                            urlUtil().ALL_USERS_URL, 
+                            urlUtil().ALL_USERS_URL+"/role/"+role, 
                             getHeader(authorization)
                         );
 

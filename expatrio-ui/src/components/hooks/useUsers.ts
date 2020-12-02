@@ -17,7 +17,7 @@ export function useUsers(): UsersScheme {
             updateUser(newUser, state.authorization, dispatch)
         },
         GetUsers(role: string) {
-            fetchAllUsers(state.authorization, dispatch)
+            fetchAllUsers(role, state.authorization, dispatch)
         },
         SetCurrentPage(currentPage: string) {
             dispatch({type: CURRENT_PAGE, page: currentPage})

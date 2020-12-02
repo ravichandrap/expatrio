@@ -2,6 +2,7 @@ package com.expatrio.user.service.controllers;
 
 import com.expatrio.user.service.beans.UserDetails;
 import com.expatrio.user.service.beans.UserProfile;
+import com.expatrio.user.service.exception.UserForbidden;
 import com.expatrio.user.service.service.UserService;
 import com.expatrio.user.service.util.WebClientAPI;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class UserController {
 
         UserDetails user = service.validate(userProfile);
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+
     }
 
     @PostMapping("/validate/email")
@@ -62,9 +64,10 @@ public class UserController {
     }
 
     @GetMapping("/role/{role}")
-    public List<UserDetails> getAllUsersByRole(@RequestHeader(name = "Authorization") String jwtId, @PathVariable String role) {
-        logger.info("===== getAllUsersByRole Authorization:{}=======", jwtId);
-        return service.getByRole(role);
+    public UserDetailsResponse getAllUsersByRole(@RequestHeader(name = "Authorization") String authorization,
+                                               @PathVariable String role) {
+        logger.info("===== getAllUsersByRole Authorization:{}=======", authorization);
+        return UserDetailsResponse.of(authorization, service.get(role));
     }
 
     @GetMapping

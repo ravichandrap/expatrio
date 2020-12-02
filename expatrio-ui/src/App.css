@@ -41,7 +41,7 @@
 /* Style the header with a grey background and some padding */
 .header {
     overflow: hidden;
-    background-color: #5ACBBD;
+    background-color: #b6ccc9;
     padding: 20px 10px;
 }
 
@@ -85,13 +85,14 @@
 }
 
 .users-list, .create-user {
-    background-color: lightblue;
+    background-color: rgb(164, 170, 172);
     padding: 20px;
 }
 
 .users-list div {
     margin: 10px;
 }
+ 
 
 .users-list .odd {
     background-color: #dddddd;
@@ -100,6 +101,10 @@
 
 .users-list .even {
     background-color: aliceblue;
+}
+
+table {
+    text-align: center;
 }
 
 .even, .odd{
@@ -115,12 +120,7 @@
     padding-left: 20%;
     padding-right: 20%;
 }
-
-.create-user label {
-    /*padding-right:20px;*/
-}
-
-/* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+ 
 @media screen and (max-width: 500px) {
     .header a {
         float: none;
@@ -140,7 +140,6 @@
     background-color: white;
 }
 
-/* Full-width input fields */
 input[type=text], input[type=password], select {
     width: 100%;
     padding: 15px;

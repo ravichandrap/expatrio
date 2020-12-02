@@ -3,6 +3,7 @@ package com.expatrio.auth.controller;
 import com.expatrio.auth.beans.AuthRequest;
 import com.expatrio.auth.beans.AuthResponse;
 import com.expatrio.auth.beans.UserDetails;
+import com.expatrio.auth.exception.UserForbidden;
 import com.expatrio.auth.exception.UserNotFoundRuntimeException;
 import com.expatrio.auth.util.JwtUtil;
 import com.expatrio.auth.util.WebClientAPI;
@@ -31,8 +32,12 @@ public class AuthServiceController {
     public ResponseEntity<AuthResponse> create(@RequestBody AuthRequest user) throws IOException, InterruptedException {
         logger.debug("AuthenticationRequest: {} ", user);
         UserDetails userProfile = webClientAPI.validate(user);
-        final String jwt = jwtTokenUtil.generateToken(userProfile.getEmail());
-        return ResponseEntity.ok(new AuthResponse(jwt, userProfile));
+        if(userProfile.getRoles().stream().anyMatch(roleDetails -> roleDetails.getName().equalsIgnoreCase("admin"))) {
+            final String jwt = jwtTokenUtil.generateToken(userProfile.getEmail());
+            return ResponseEntity.ok(new AuthResponse(jwt, userProfile));
+        }
+
+        throw new UserForbidden("User do not have valid permissions: "+user.getEmail());
     }
 
     @PostMapping("/validate")

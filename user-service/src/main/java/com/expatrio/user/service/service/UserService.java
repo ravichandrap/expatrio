@@ -1,6 +1,7 @@
 package com.expatrio.user.service.service;
 
 import com.expatrio.user.service.beans.UserProfile;
+import com.expatrio.user.service.entities.Role;
 import com.expatrio.user.service.entities.UserEntity;
 import com.expatrio.user.service.exception.InvalidCredentialsException;
 import org.modelmapper.ModelMapper;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.expatrio.user.service.beans.UserDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,8 +63,17 @@ public class UserService {
         return getCollectUserDetails(repository.findAll());
     }
 
-    public List<UserDetails> getByRole(String role) {
-        return getCollectUserDetails(repository.findByRoles(role));
+    public List<UserDetails> get(String role) {
+        if(role.equalsIgnoreCase("all"))
+            return getCollectUserDetails(repository.findAll());
+        return getCollectUserDetailsByRole(role, repository.findAll());
+    }
+
+    private List<UserDetails> getCollectUserDetailsByRole(String role, List<UserEntity> all) {
+        return all.stream()
+                .filter(userEntity -> userEntity.getRoles().stream().anyMatch(role1 -> role1.getName().equalsIgnoreCase(role)))
+                .map(this::getUserDetails)
+                .collect(Collectors.toList());
     }
 
     private List<UserDetails> getCollectUserDetails(List<UserEntity> users) {

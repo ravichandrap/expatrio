@@ -5,7 +5,7 @@ import { User } from '../../typings/User';
 export const UserLogin: FC = () => { 
 //style="background-color:#f1f1f1"
 
-const {LoginUser, error} = useContext(UsersContext);
+const {LoginUser, message} = useContext(UsersContext);
     const [user, setUser] = useState({
         email:"rc.divija@outlook.com",
         password:"test1234"
@@ -19,10 +19,11 @@ const {LoginUser, error} = useContext(UsersContext);
         })
     }
 
+
     return <div className="create-user">
             <div className="container">
                 <h1>Login Form</h1>
-                <p>{error?.message}</p>
+                <p>{message}{message}</p>
                 
                 <hr/>
 

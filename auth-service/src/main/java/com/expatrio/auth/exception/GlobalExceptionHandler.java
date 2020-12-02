@@ -33,27 +33,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
+	@ExceptionHandler({ UserForbidden.class })
+	public ResponseEntity<Object> userForbidden(Exception ex, WebRequest request) {
+		ErrorResponse errors = new ErrorResponse();
+		errors.setErrorCode(String.valueOf(HttpStatus.FORBIDDEN));
+		errors.setDescription("User do not have valid permissions");
+		errors.setStatus(HttpStatus.FORBIDDEN);
+		errors.setTimestamp(LocalDateTime.now());
 
-//	@ExceptionHandler({ BadCredentialsException.class, IllegalArgumentException.class })
-//	public ResponseEntity<Object> handleBadCredentialsException(Exception ex, WebRequest request) {
-//		ErrorResponse errors = new ErrorResponse();
-//		errors.setErrorCode("404");
-//		errors.setDescription("User not found");
-//		errors.setStatus(HttpStatus.NOT_FOUND);
-//		errors.setTimestamp(LocalDateTime.now());
-//
-//		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
-//	}
-//
-//	@ExceptionHandler({ DisabledException.class })
-//	public ResponseEntity<Object> handleDisabledException(Exception ex, WebRequest request) {
-//		return new ResponseEntity<Object>("Disabled credentials", new HttpHeaders(), HttpStatus.UNAUTHORIZED);
-//	}
-//
-//	@ExceptionHandler({ AccessDeniedException.class })
-//	public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
-//		return new ResponseEntity<Object>("Access denied message here", new HttpHeaders(), HttpStatus.FORBIDDEN);
-//	}
+		return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
+	}
 	@ExceptionHandler({ InvalidCredentialsException.class })
 	public ResponseEntity<Object> handleInvalidCredentialsException(Exception ex, WebRequest request) {
 		return new ResponseEntity<Object>("Invalid Credentials please try again with valid credentials", new HttpHeaders(), HttpStatus.FORBIDDEN);

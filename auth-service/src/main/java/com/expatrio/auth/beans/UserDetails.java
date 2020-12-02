@@ -9,7 +9,7 @@ public class UserDetails {
     private String email;
     private String password;
     private String phoneNumber;
-    private Set<RoleDetails> role;
+    private Set<RoleDetails> roles;
     public UserDetails(){}
 
     public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, Set<RoleDetails> role) {
@@ -18,7 +18,7 @@ public class UserDetails {
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.role = role;
+        this.roles = role;
     }
 
     public Long getId() {
@@ -69,12 +69,12 @@ public class UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public Set<RoleDetails> getRole() {
-        return role;
+    public Set<RoleDetails> getRoles() {
+        return roles;
     }
 
-    public void setRole(Set<RoleDetails> role) {
-        this.role = role;
+    public void setRoles(Set<RoleDetails> roles) {
+        this.roles = roles;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class UserDetails {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", role='" + role + '\'' +
+                ", role='" + roles + '\'' +
                 '}';
     }
 }

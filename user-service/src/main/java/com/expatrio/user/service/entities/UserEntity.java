@@ -16,6 +16,8 @@ public class UserEntity {
     private String email;
     private String password;
     private String phoneNumber;
+    @ManyToMany(fetch=FetchType.EAGER)
+    private Set<Role> roles = null;
 
     public UserEntity(String firstName, String lastName, String email, String password, String phoneNumber, Set<Role> roles) {
         this.firstName = firstName;
@@ -25,15 +27,6 @@ public class UserEntity {
         this.phoneNumber = phoneNumber;
         this.roles = roles;
     }
-
-    @ManyToMany(
-//            mappedBy = "users",
-//            cascade=CascadeType.ALL,
-            fetch=FetchType.EAGER)
-//    @JoinTable(name = "join_user_role",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = null;
 
     public Set<Role> getRoles() {
         return roles;
