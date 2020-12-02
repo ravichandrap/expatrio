@@ -1,7 +1,7 @@
 import { getEnvironmentVariables } from "../utils/getEnvironmentVariables";
 import { Dispatch } from "react";
 import { UsersAction } from "../typings/UsersAction";
-import { IS_LOADING, REQUEST_ERROR, SET_USERS, LOG_IN, SET_MESSAGE } from "../utils/Constants";
+import { IS_LOADING, REQUEST_ERROR, SET_USERS, LOG_IN, SET_MESSAGE, UPDATE_USER } from "../utils/Constants";
 import { User } from "../typings/User";
 import axios, { AxiosResponse } from 'axios';
 
@@ -16,6 +16,7 @@ const urlUtil = () => {
     return {
         LOGIN_URL: `${BASE_URL}/auth/loginuser`,
         ALL_USERS_URL: `http://localhost:8081/api/v1/user`,
+        UPDATE_USER_URL: `http://localhost:8081/api/v1/user`,
     }
 }
 
@@ -34,10 +35,6 @@ export async function loginUser(email: string, password: string, dispatch: Dispa
                                         urlUtil().LOGIN_URL, 
                                         { email: email, password: password }
                                     );
-
-        console.log(data);
-        console.log("data.authorization:",data.authorization);
-
         dispatch({
             type: LOG_IN,
             authorization: data.authorization,
@@ -64,18 +61,14 @@ export async function fetchUsers(role: string = "Customer",
 export async function fetchAllUsers(authorization: string,
         dispatch: Dispatch<UsersAction>
     ) {
-        console.log("authorization: ", authorization);
-        
         try {
             dispatch({ type: IS_LOADING });
             const { data }: AxiosResponse<AllUserResponse> = 
-            await axios.get(
+                        await axios.get(
                             urlUtil().ALL_USERS_URL, 
                             getHeader(authorization)
                         );
 
-            console.log("data: ", data.users);
-            
             dispatch({ 
                 type: SET_USERS, 
                 users: data.users, 
@@ -87,10 +80,25 @@ export async function fetchAllUsers(authorization: string,
         }
 }
 
-export async function updateUser(user: User, dispatch: Dispatch<UsersAction>) {
+export async function updateUser(
+                        user: User, 
+                        authorization: string,
+                        dispatch: Dispatch<UsersAction>) {
+                            console.log(user);
+                            
     try {
-        await axios.post(postURL(), user);
-        dispatch({ type: SET_MESSAGE, message: "User has been create!" })
+        const {data}:AxiosResponse<UserResponse> = await axios.post(
+                    urlUtil().UPDATE_USER_URL, 
+                    user, 
+                    getHeader(authorization));
+            console.log(data);
+            
+        dispatch({ 
+            type: UPDATE_USER,
+            user: data.user,
+            authorization: data.authorization,
+            message: `User ${user.lastName+', '+ user.firstName} has been ${user.id ? 'updated': 'create'}` 
+        })
     } catch (error) {
         console.log(error);
         dispatch({ type: REQUEST_ERROR, error: error.message });
@@ -107,13 +115,14 @@ export async function deleteUser(id: string, dispatch: Dispatch<UsersAction>) {
     }
 }
 
-interface UserResponse {
+interface Auth {
     authorization: string;
+}
+interface UserResponse extends Auth {
     user: User;
 }
 
-interface AllUserResponse {
-    authorization: string;
+interface AllUserResponse extends Auth {
     users: User[];
 }
 

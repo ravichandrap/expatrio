@@ -15,3 +15,4 @@ export const LOG_IN = "users/LOG_IN"
 export const EDIT_USER = "users/EDIT_USER";
 export const SET_MESSAGE = "users/SET_MESSAGE";
 export const CLEAN = "users/CLEAN";
+export const UPDATE_USER = "users/UPDATE_USER";

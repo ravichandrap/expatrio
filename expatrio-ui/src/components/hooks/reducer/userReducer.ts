@@ -12,7 +12,8 @@ import {
     EDIT_USER,
     CREATE_USER_PAGE,
     SET_MESSAGE,
-    LOG_IN
+    LOG_IN,
+    UPDATE_USER
 } from "../../utils/Constants";
 import { User } from "../../typings/User";
 
@@ -69,6 +70,14 @@ export function userReducer(state: UsersState, action: UsersAction): UsersState 
                 authorization: action.authorization,
                 user: action.user,
                 currentPage: USERS_PAGE
+            }
+        case UPDATE_USER: 
+            return {
+                ...state,
+                authorization: action.authorization,
+                // user: action.user,
+                currentPage: USERS_PAGE,
+                message: action.message
             }
             
         default:

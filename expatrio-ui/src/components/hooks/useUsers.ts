@@ -14,7 +14,7 @@ export function useUsers(): UsersScheme {
     return {
         ...state,
         CreateOrUpdateUser(newUser:User) {
-            updateUser(newUser, dispatch);
+            updateUser(newUser, state.authorization, dispatch)
         },
         GetUsers(role: string) {
             fetchAllUsers(state.authorization, dispatch)
@@ -39,6 +39,9 @@ export function useUsers(): UsersScheme {
         }, 
         GetAllUsers(){
             
+        },
+        UpdateUser(user: User) {
+            updateUser(user, state.authorization, dispatch)
         }
     }
 }

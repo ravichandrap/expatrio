@@ -63,16 +63,9 @@ public class UserController {
                                               @RequestBody UserDetails userDetails) {
         logger.info("===== PostMapping Update User =======Authorization:{}", jwtId);
 
-        return new ResponseEntity<>(service.save(userDetails), HttpStatus.ACCEPTED);
+        return new ResponseEntity(new UserDetailsResp(jwtId, service.save(userDetails)), HttpStatus.ACCEPTED);
     }
-
-    @PutMapping
-    public ResponseEntity<UserDetails> update(@RequestHeader(name = "Authorization") String jwtId,
-                                              @RequestBody UserDetails userDetails) {
-        logger.info("===== update : Authorization:{}=======", jwtId);
-        return new ResponseEntity<>(service.save(userDetails), HttpStatus.ACCEPTED);
-    }
-
+    
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
@@ -91,17 +84,11 @@ public class UserController {
     }
 }
 
-class UserDetailsResponse {
+class JWTAuthorization {
     private String authorization;
-    private List<UserDetails> users;
 
-    public UserDetailsResponse(String authorization, List<UserDetails> users) {
+    public JWTAuthorization(String authorization) {
         this.authorization = authorization;
-        this.users = users;
-    }
-
-    public static UserDetailsResponse of(String authorization, List<UserDetails> users) {
-        return new UserDetailsResponse(authorization, users);
     }
 
     public String getAuthorization() {
@@ -111,6 +98,20 @@ class UserDetailsResponse {
     public void setAuthorization(String authorization) {
         this.authorization = authorization;
     }
+}
+
+class UserDetailsResponse extends JWTAuthorization {
+
+    private List<UserDetails> users;
+
+    public UserDetailsResponse(String authorization, List<UserDetails> users) {
+        super(authorization);
+        this.users = users;
+    }
+
+    public static UserDetailsResponse of(String authorization, List<UserDetails> users) {
+        return new UserDetailsResponse(authorization, users);
+    }
 
     public List<UserDetails> getUsers() {
         return users;
@@ -118,5 +119,22 @@ class UserDetailsResponse {
 
     public void setUsers(List<UserDetails> users) {
         this.users = users;
+    }
+}
+
+class UserDetailsResp extends JWTAuthorization {
+    private UserDetails user;
+
+    public UserDetailsResp(String authorization, UserDetails user) {
+        super(authorization);
+        this.user = user;
+    }
+
+    public UserDetails getUser() {
+        return user;
+    }
+
+    public void setUser(UserDetails user) {
+        this.user = user;
     }
 }
