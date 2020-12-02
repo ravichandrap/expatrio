@@ -1,10 +1,7 @@
 package com.expatrio.user.service.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
-
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "user")
@@ -20,24 +17,29 @@ public class UserEntity {
     private String password;
     private String phoneNumber;
 
-    @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
-
-
-    public UserEntity(String firstName,
-                      String lastName,
-                      String email,
-                      String password,
-                      String phoneNumber,
-                      Set<Role> roles) {
+    public UserEntity(String firstName, String lastName, String email, String password, String phoneNumber, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.roles = roles;
+    }
+
+    @ManyToMany(
+//            mappedBy = "users",
+//            cascade=CascadeType.ALL,
+            fetch=FetchType.EAGER)
+//    @JoinTable(name = "join_user_role",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = null;
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -88,13 +90,5 @@ public class UserEntity {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 }

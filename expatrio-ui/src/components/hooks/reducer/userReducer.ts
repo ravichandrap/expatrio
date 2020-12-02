@@ -38,6 +38,7 @@ export function userReducer(state: UsersState, action: UsersAction): UsersState 
         case CURRENT_PAGE:
             return {
                 ...state,
+                editUser: {} as User,
                 currentPage: action.page,
             }
         case SET_USER:

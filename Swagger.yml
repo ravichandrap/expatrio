@@ -1,0 +1,36 @@
+openapi: '3.0.2'
+info:
+  title: Exptrio Coding challenge API Rest 
+  version: '1.0'
+servers:
+  - url: http://localhost:8081/api/v1/
+paths:
+  /test:
+    get:
+      responses: 
+          200: 
+            description: Successfully fetched all posts from JSONPlaceholder,
+            content: 
+              application/json: 
+                schema: 
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      userId: 
+                        type: number
+                      id: 
+                        type: number
+                      title: 
+                        type: string
+                      body: 
+                        type: string
+                    example: 
+                      userId: 1,
+                      id: 1,
+                      title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit,
+                      body: quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto
+          
+
+          
+        

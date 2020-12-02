@@ -1,6 +1,6 @@
 import {UsersState} from "../typings/UsersState";
 import {User} from "../typings/User";
-import { LOGIN_PAGE } from "./Constants";
+import { CREATE_USER_PAGE, LOGIN_PAGE } from "./Constants";
 
 export function getUserInitialState() : UsersState {
     return {
@@ -11,7 +11,7 @@ export function getUserInitialState() : UsersState {
         editUser: {} as User,
         error: null,
         inputErrorMessage:'',
-        currentPage: LOGIN_PAGE, 
+        currentPage: CREATE_USER_PAGE, 
         message: ""
     }
 }

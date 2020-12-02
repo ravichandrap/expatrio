@@ -1,6 +1,7 @@
+import { getRoles } from '@testing-library/react';
 import React, {FC, useContext, useEffect, useState} from 'react';
 import { UsersContext } from '../../hooks/UsersProvider';
-import { User } from '../../typings/User';
+import { User, Role } from '../../typings/User';
 
 export const CreateUser: FC = () => {
     const {error, message, user, editUser ,CreateOrUpdateUser} = useContext(UsersContext);
@@ -14,10 +15,25 @@ export const CreateUser: FC = () => {
         })
     }
 
+    const updateRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const {value} = e.target;
+        console.log("name:: ", value);
+        
+        setUserDetails({
+            ...userDetails,
+            roles: getRoles(Number(value))
+        })
+
+        console.log(userDetails);
+        
+    }
+
+    const getRoles = (id:number): Role[] => id === 1 ? [{name:"Admin",id: 1001}]:[{name: "User", id: 1002}]
+
     const showMessage = error || message ? <p className="message">{error || message}</p>: "";
 
     useEffect(()=>{
-        setUserDetails(editUser.id ? editUser: user);
+        setUserDetails(editUser.id ? editUser: {} as User);
     }, [user, editUser])
 
     return <div className="create-user">
@@ -69,11 +85,9 @@ export const CreateUser: FC = () => {
                         onChange={updateUserDetails}/>
 
                 <label htmlFor="email"><b>User Role</b></label>
-                <select value={userDetails.role}>
-                    <option>Select Role</option>
-                    <option>Admin</option>
-                    <option>Customer</option>
-                    <option>User</option>
+                <select onChange={updateRole}>
+                    <option value="1001">Admin</option>
+                    <option value="1002">User</option>
                 </select>
 
                 <hr/>

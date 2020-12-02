@@ -1,5 +1,7 @@
 package com.expatrio.auth.beans;
 
+import java.util.Set;
+
 public class UserDetails {
     private Long id;
     private String firstName;
@@ -7,10 +9,10 @@ public class UserDetails {
     private String email;
     private String password;
     private String phoneNumber;
-    private String role;
+    private Set<RoleDetails> role;
     public UserDetails(){}
 
-    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, String role) {
+    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, Set<RoleDetails> role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,11 +69,11 @@ public class UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getRole() {
+    public Set<RoleDetails> getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Set<RoleDetails> role) {
         this.role = role;
     }
 

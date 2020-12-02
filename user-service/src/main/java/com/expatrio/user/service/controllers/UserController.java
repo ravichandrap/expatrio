@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -41,15 +40,6 @@ public class UserController {
         return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDetails> get(@RequestHeader(name = "Authorization") String jwtId,
-                                           @PathVariable String email) {
-        logger.info("===== get with email: {}: Authorization:{} =======", email, jwtId);
-
-        UserDetails user = service.getByEmail(email);
-        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
-    }
-
     @GetMapping("/id/{id}")
     public ResponseEntity<UserDetails> getById(@RequestHeader(name = "Authorization") String jwtId,
                                                @PathVariable Long id) {
@@ -62,8 +52,8 @@ public class UserController {
     public ResponseEntity<UserDetails> create(@RequestHeader(name = "Authorization") String jwtId,
                                               @RequestBody UserDetails userDetails) {
         logger.info("===== PostMapping Update User =======Authorization:{}", jwtId);
-
-        return new ResponseEntity(new UserDetailsResp(jwtId, service.save(userDetails)), HttpStatus.ACCEPTED);
+        UserDetails save = service.save(userDetails);
+        return new ResponseEntity(new UserDetailsResp(jwtId,save ), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

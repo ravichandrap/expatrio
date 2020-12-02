@@ -15,8 +15,8 @@ const loginURL = () => `${BASE_URL}/login`
 const urlUtil = () => {
     return {
         LOGIN_URL: `${BASE_URL}/auth/loginuser`,
-        ALL_USERS_URL: `http://localhost:8081/api/v1/user`,
-        UPDATE_USER_URL: `http://localhost:8081/api/v1/user`,
+        ALL_USERS_URL: `http://localhost:8083/api/v1/user`,
+        UPDATE_USER_URL: `http://localhost:8083/api/v1/user`,
     }
 }
 
@@ -110,14 +110,14 @@ export async function updateUser(
     }
 }
 
-export async function deleteUser(id: string, dispatch: Dispatch<UsersAction>) {
+export async function deleteUser(id: string, authorization: string, dispatch: Dispatch<UsersAction>) {
 
     try {
         if(!window.confirm(`Arey sure what to delete User id: ${id}`)) {
             return;
         }
 
-        await axios.delete(`${urlUtil().UPDATE_USER_URL}/${id}`);
+        await axios.delete(`${urlUtil().UPDATE_USER_URL}/${id}`,  getHeader(authorization));
         dispatch({ type: SET_MESSAGE, message: "User has been deleted!" })
     } catch (error) {
         console.log(error);

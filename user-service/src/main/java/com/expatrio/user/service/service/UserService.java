@@ -1,17 +1,15 @@
 package com.expatrio.user.service.service;
 
-import com.expatrio.user.service.beans.RoleDetails;
 import com.expatrio.user.service.beans.UserProfile;
-import com.expatrio.user.service.entities.Role;
 import com.expatrio.user.service.entities.UserEntity;
 import com.expatrio.user.service.exception.InvalidCredentialsException;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.expatrio.user.service.beans.UserDetails;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +19,9 @@ public class UserService {
     UserRepository repository;
 
     public UserDetails save(UserDetails userDetails) {
-        return getUserDetails(repository.save(getUserDetails(userDetails)));
+        UserEntity userEntity = getUserDetails(userDetails);
+        UserEntity saveEntity = repository.save(userEntity);
+        return getUserDetails(saveEntity);
     }
 
     public void delete(Long id) {
@@ -45,22 +45,15 @@ public class UserService {
 
     private UserDetails getUserDetails(UserEntity user) {
         UserDetails userDetails = new UserDetails();
-        BeanUtils.copyProperties(user, userDetails);
-        userDetails.setRoles(copyRoles(user.getRoles()));
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(user, userDetails);
         return userDetails;
-    }
-
-    private Set<RoleDetails> copyRoles(Set<Role> roles) {
-        return roles.stream().map(RoleDetails::new).collect(Collectors.toSet());
-    }
-    private Set<Role> copyRolesFromRoleDetails(Set<RoleDetails> roles) {
-        return roles.stream().map(RoleDetails::of).collect(Collectors.toSet());
     }
 
     private UserEntity getUserDetails(UserDetails user) {
         UserEntity entity = new UserEntity();
-        BeanUtils.copyProperties(user, entity);
-        entity.setRoles(copyRolesFromRoleDetails(user.getRoles()));
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(user, entity);
         return entity;
     }
 

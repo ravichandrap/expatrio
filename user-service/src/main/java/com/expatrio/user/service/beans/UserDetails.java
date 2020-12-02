@@ -1,7 +1,5 @@
 package com.expatrio.user.service.beans;
 
-import org.springframework.data.annotation.Transient;
-
 import java.util.Set;
 
 public class UserDetails {

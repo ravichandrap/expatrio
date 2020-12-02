@@ -23,19 +23,20 @@ public class DataLoader implements ApplicationRunner {
 
     public void run(ApplicationArguments args) {
         Set<Role> adminRoles = new HashSet<>(1);
+        adminRoles.add(new Role(1001L));
+
         Set<Role> userRoles = new HashSet<>(1);
-        adminRoles.add(new Role("Admin"));
-        userRoles.add(new Role("User"));
+        userRoles.add(new Role(1002L));
 
         userRepository.save(new UserEntity(
                 "Sravan",
                 "Kuma",
-                "rc.srAVAN@outlook.com",
+                "ravi@outlook.com",
                 "test1234",
                 "20202020",
                 userRoles
         ));
-
+//
         userRepository.save(new UserEntity(
                 "KRISHNA",
                 "KOND",

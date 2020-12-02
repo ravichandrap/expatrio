@@ -32,7 +32,7 @@ export function useUsers(): UsersScheme {
             dispatch({type: EDIT_USER, user: user})
         },
         DeleteUser(id: string) {
-            deleteUser(id, dispatch)
+            deleteUser(id, state.authorization, dispatch)
         },
         Cleanup(){
 
