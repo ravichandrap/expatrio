@@ -65,7 +65,7 @@ public class UserController {
 
         return new ResponseEntity(new UserDetailsResp(jwtId, service.save(userDetails)), HttpStatus.ACCEPTED);
     }
-    
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);

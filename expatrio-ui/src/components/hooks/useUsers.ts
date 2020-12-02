@@ -42,6 +42,7 @@ export function useUsers(): UsersScheme {
         },
         UpdateUser(user: User) {
             updateUser(user, state.authorization, dispatch)
+            fetchAllUsers(state.authorization, dispatch)
         }
     }
 }

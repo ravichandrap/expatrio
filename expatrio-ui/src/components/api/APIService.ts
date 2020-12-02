@@ -31,15 +31,20 @@ const getHeader = (authorization: string) => {
 export async function loginUser(email: string, password: string, dispatch: Dispatch<UsersAction>) {
     try {
         dispatch({ type: IS_LOADING });
-        const { data }: AxiosResponse<UserResponse> = await axios.post(
+        const { data, status, statusText }: AxiosResponse<UserResponse> = await axios.post(
                                         urlUtil().LOGIN_URL, 
                                         { email: email, password: password }
                                     );
+       if(status === 200 ) {
         dispatch({
             type: LOG_IN,
             authorization: data.authorization,
             user: data.user
         })
+       } else {
+        dispatch({ type: REQUEST_ERROR, error: {message: statusText, name: "" } });
+       }
+        
     } catch (error) {
         console.log(error);
         dispatch({ type: REQUEST_ERROR, error: error });
@@ -106,8 +111,13 @@ export async function updateUser(
 }
 
 export async function deleteUser(id: string, dispatch: Dispatch<UsersAction>) {
+
     try {
-        await axios.delete(deleteURL(id));
+        if(!window.confirm(`Arey sure what to delete User id: ${id}`)) {
+            return;
+        }
+
+        await axios.delete(`${urlUtil().UPDATE_USER_URL}/${id}`);
         dispatch({ type: SET_MESSAGE, message: "User has been deleted!" })
     } catch (error) {
         console.log(error);
