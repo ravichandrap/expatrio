@@ -21,6 +21,17 @@ public class UserDetails {
         this.roles = role;
     }
 
+    public static UserDetails of(String firstName, String lastName, String email, String password, String phoneNumber, Set<RoleDetails> role) {
+        UserDetails userDetails = new UserDetails();
+        userDetails.setRoles(role);
+        userDetails.setFirstName(firstName);
+        userDetails.setLastName(lastName);
+        userDetails.setPhoneNumber(phoneNumber);
+        userDetails.setEmail(email);
+        userDetails.setPhoneNumber(password);
+        return userDetails;
+    }
+
     public Long getId() {
         return id;
     }

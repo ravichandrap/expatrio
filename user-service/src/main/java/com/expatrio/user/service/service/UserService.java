@@ -1,15 +1,11 @@
 package com.expatrio.user.service.service;
 
 import com.expatrio.user.service.beans.UserProfile;
-import com.expatrio.user.service.entities.Role;
 import com.expatrio.user.service.entities.UserEntity;
 import com.expatrio.user.service.exception.InvalidCredentialsException;
-import org.modelmapper.ModelMapper;
+import com.expatrio.user.service.exception.UserNotFoundRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.expatrio.user.service.beans.UserDetails;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,67 +16,45 @@ public class UserService {
     @Autowired
     UserRepository repository;
 
-    public UserDetails save(UserDetails userDetails) {
-        UserEntity userEntity = getUserDetails(userDetails);
-        UserEntity saveEntity = repository.save(userEntity);
-        return getUserDetails(saveEntity);
+    public UserEntity save(UserEntity userEntity) {
+        return repository.save(userEntity);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (Exception e) {
+            throw new UserNotFoundRuntimeException(String.valueOf(id));
+        }
     }
 
-    public UserDetails get(Long id) {
+
+    public List<UserEntity> get() {
+        return repository.findAll();
+    }
+
+    public UserEntity get(Long id) {
         Optional<UserEntity> optional = repository.findById(id);
-        return getUserDetails(optional);
+        return optional.orElseThrow(()->new InvalidCredentialsException("Not Found"));
     }
 
-    public UserDetails getByEmail(String email) {
-        Optional<UserEntity> optional = repository.findByEmail(email);
-        return getUserDetails(optional);
+    public List<UserEntity> get(String role) {
+        List<UserEntity> all = repository.findAll();
+        return getCollectUserDetailsByRole(role, all);
     }
 
-    private UserDetails getUserDetails(Optional<UserEntity> optional) {
-        UserEntity user = optional.orElseThrow(()->new InvalidCredentialsException("Not Found"));
-        return getUserDetails(user);
+    public Optional<UserEntity> getByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
-    private UserDetails getUserDetails(UserEntity user) {
-        UserDetails userDetails = new UserDetails();
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(user, userDetails);
-        return userDetails;
+    public UserEntity validate(UserProfile userProfile) {
+        Optional<UserEntity> userEntity = repository.findByEmailAndPassword(userProfile.getEmail(), userProfile.getPassword());
+        return userEntity.orElseThrow(()->new InvalidCredentialsException("Not found"));
     }
 
-    private UserEntity getUserDetails(UserDetails user) {
-        UserEntity entity = new UserEntity();
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.map(user, entity);
-        return entity;
-    }
-
-    public List<UserDetails> get() {
-        return getCollectUserDetails(repository.findAll());
-    }
-
-    public List<UserDetails> get(String role) {
-        if(role.equalsIgnoreCase("all"))
-            return getCollectUserDetails(repository.findAll());
-        return getCollectUserDetailsByRole(role, repository.findAll());
-    }
-
-    private List<UserDetails> getCollectUserDetailsByRole(String role, List<UserEntity> all) {
+    private List<UserEntity> getCollectUserDetailsByRole(String role, List<UserEntity> all) {
         return all.stream()
                 .filter(userEntity -> userEntity.getRoles().stream().anyMatch(role1 -> role1.getName().equalsIgnoreCase(role)))
-                .map(this::getUserDetails)
                 .collect(Collectors.toList());
-    }
-
-    private List<UserDetails> getCollectUserDetails(List<UserEntity> users) {
-        return users.stream().map(this::getUserDetails).collect(Collectors.toList());
-    }
-
-    public UserDetails validate(UserProfile userProfile) {
-        return getUserDetails(repository.findByEmailAndPassword(userProfile.getEmail(), userProfile.getPassword()));
     }
 }

@@ -2,9 +2,10 @@ package com.expatrio.user.service.controllers;
 
 import com.expatrio.user.service.beans.UserDetails;
 import com.expatrio.user.service.beans.UserProfile;
-import com.expatrio.user.service.exception.UserForbidden;
+import com.expatrio.user.service.entities.UserEntity;
+import com.expatrio.user.service.exception.InvalidCredentialsException;
 import com.expatrio.user.service.service.UserService;
-import com.expatrio.user.service.util.WebClientAPI;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -19,17 +22,14 @@ public class UserController {
     static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    WebClientAPI webClientAPI;
-
-    @Autowired
     UserService service;
 
     @PostMapping("/validate")
     public ResponseEntity<UserDetails> validate(@RequestBody UserProfile userProfile) {
-        logger.info("===== get with email: Authorization:{} =======", userProfile.toString());
+        logger.info("===== get with email: Authorization: =======");
 
-        UserDetails user = service.validate(userProfile);
-        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+        UserDetails userDetails = getUserDetails(service.validate(userProfile));
+        return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
 
     }
 
@@ -38,24 +38,28 @@ public class UserController {
                                                    @RequestBody String email) {
         logger.info("===== get with email: Authorization:{} =======", email);
 
-        service.getByEmail(email);
-        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+        UserEntity userEntity = service.getByEmail(email)
+                .orElseThrow(() -> new InvalidCredentialsException("Not found"));
+        return new ResponseEntity<>(userEntity != null, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<UserDetails> getById(@RequestHeader(name = "Authorization") String jwtId,
                                                @PathVariable Long id) {
         logger.info("===== get with id: {} : Authorization:{}=======", id, jwtId);
-        UserDetails user = service.get(id);
-        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+        UserEntity user = service.get(id);
+        UserDetails userDetails = getUserDetails(user);
+        return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
     }
 
     @PostMapping
-    public ResponseEntity<UserDetails> create(@RequestHeader(name = "Authorization") String jwtId,
+    public ResponseEntity<UserDetailsResp> create(@RequestHeader(name = "Authorization") String jwtId,
                                               @RequestBody UserDetails userDetails) {
         logger.info("===== PostMapping Update User =======Authorization:{}", jwtId);
-        UserDetails save = service.save(userDetails);
-        return new ResponseEntity(new UserDetailsResp(jwtId,save ), HttpStatus.ACCEPTED);
+
+        UserEntity save = service.save(getUserDetails(userDetails));
+        UserDetails saveUser = getUserDetails(save);
+        return new ResponseEntity<>(new UserDetailsResp(jwtId,saveUser ), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
@@ -67,13 +71,34 @@ public class UserController {
     public UserDetailsResponse getAllUsersByRole(@RequestHeader(name = "Authorization") String authorization,
                                                @PathVariable String role) {
         logger.info("===== getAllUsersByRole Authorization:{}=======", authorization);
-        return UserDetailsResponse.of(authorization, service.get(role));
+        List<UserEntity> users
+                = role.equalsIgnoreCase("all")
+                  ? service.get(): service.get(role);
+        return UserDetailsResponse.of(authorization, getCollectUserDetails(users));
     }
 
     @GetMapping
     public UserDetailsResponse getAll(@RequestHeader(name = "Authorization") String authorization) {
         logger.info("===== getAllUsersByRole =======::::Authorization: {}", authorization);
-        return UserDetailsResponse.of(authorization, service.get());
+        return UserDetailsResponse.of(authorization, getCollectUserDetails(service.get()));
+    }
+
+    private List<UserDetails> getCollectUserDetails(List<UserEntity> users) {
+        return users.stream().map(this::getUserDetails).collect(Collectors.toList());
+    }
+
+    private UserEntity getUserDetails(UserDetails user) {
+        UserEntity entity = new UserEntity();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(user, entity);
+        return entity;
+    }
+
+    private UserDetails getUserDetails(UserEntity user) {
+        UserDetails userDetails = new UserDetails();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.map(user, userDetails);
+        return userDetails;
     }
 }
 
@@ -83,11 +108,9 @@ class JWTAuthorization {
     public JWTAuthorization(String authorization) {
         this.authorization = authorization;
     }
-
     public String getAuthorization() {
         return authorization;
     }
-
     public void setAuthorization(String authorization) {
         this.authorization = authorization;
     }
@@ -109,7 +132,6 @@ class UserDetailsResponse extends JWTAuthorization {
     public List<UserDetails> getUsers() {
         return users;
     }
-
     public void setUsers(List<UserDetails> users) {
         this.users = users;
     }
@@ -126,7 +148,6 @@ class UserDetailsResp extends JWTAuthorization {
     public UserDetails getUser() {
         return user;
     }
-
     public void setUser(UserDetails user) {
         this.user = user;
     }
