@@ -47,3 +47,4 @@ auth-service/.idea/**/**
 *.log
 .gradle/**/**
 gradle/**/**
+.gradle/**

@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api/v1/user")
+
 public class UserController {
     static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -30,11 +32,10 @@ public class UserController {
 
         UserDetails userDetails = getUserDetails(service.validate(userProfile));
         return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
-
     }
 
     @PostMapping("/validate/email")
-    public ResponseEntity<Boolean> validateByEmail(@RequestHeader(name = "Authorization") String jwtId,
+    public ResponseEntity<Boolean> validateByEmail(@RequestHeader(name = "Authorization") String authorization,
                                                    @RequestBody String email) {
         logger.info("===== get with email: Authorization:{} =======", email);
 
@@ -43,20 +44,10 @@ public class UserController {
         return new ResponseEntity<>(userEntity != null, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<UserDetails> getById(@RequestHeader(name = "Authorization") String jwtId,
-                                               @PathVariable Long id) {
-        logger.info("===== get with id: {} : Authorization:{}=======", id, jwtId);
-        UserEntity user = service.get(id);
-        UserDetails userDetails = getUserDetails(user);
-        return new ResponseEntity<>(userDetails, HttpStatus.ACCEPTED);
-    }
-
     @PostMapping
     public ResponseEntity<UserDetailsResp> create(@RequestHeader(name = "Authorization") String jwtId,
                                               @RequestBody UserDetails userDetails) {
         logger.info("===== PostMapping Update User =======Authorization:{}", jwtId);
-
         UserEntity save = service.save(getUserDetails(userDetails));
         UserDetails saveUser = getUserDetails(save);
         return new ResponseEntity<>(new UserDetailsResp(jwtId,saveUser ), HttpStatus.ACCEPTED);

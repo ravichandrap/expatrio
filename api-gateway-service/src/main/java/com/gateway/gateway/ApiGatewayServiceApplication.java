@@ -12,9 +12,11 @@ import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.function.Function;
 
+@CrossOrigin
 @SpringBootApplication
 public class ApiGatewayServiceApplication {
 

@@ -18,7 +18,10 @@ import {
 import { User } from "../../typings/User";
 
 export function userReducer(state: UsersState, action: UsersAction): UsersState {
-
+        state = {
+            ...state,
+            message: ""
+        }
     switch (action.type) {
         case REQUEST_ERROR:
             return {

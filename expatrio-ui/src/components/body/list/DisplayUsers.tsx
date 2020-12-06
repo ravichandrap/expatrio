@@ -14,16 +14,17 @@ export const DisplayUsers: FC = () => {
     const showMessage = error || message ? <td className="message">{error || message}</td>: "";
     
     const usersMap = (users !== undefined && users.length !==0 )  ? users.map((user,index)=>{
-        return <tr className={ index % 2 === 0 ? "odd": "even" } key={user.id+ index}>
+        return <tr className={ index % 2 === 0 ? "odd table-tr": "even table-tr" } key={user.id+ index}>
             <td width="5%">{user.id}</td>
             <td width="15%">{user.firstName}</td>
             <td width="15%">{user.lastName}</td>
-            <td width="20%">{user.email}</td>
-            <td width="20%">{user.phoneNumber}</td>
-            <td width="5%">{user.roles ? 
+            <td width="15%">{user.email}</td>
+            <td width="15%">{user.phoneNumber}</td>
+            <td width="10%">{user.roles ? 
                         user.roles.map(r=>
-                        <span key={r.id}>{r.name}</span>):""}</td>
-            <td width="5%">
+                        <span key={r.id}>{r.name+' '}</span>):""}
+            </td>
+            <td width="7%">
                 <button className="editbtn" onClick={()=> EditUser(user)}>Edit</button>
                 <button className="deletebtn" onClick={()=>DeleteUser(user.id)}>Delete</button>
             </td>

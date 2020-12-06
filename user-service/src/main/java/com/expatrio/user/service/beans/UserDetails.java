@@ -12,13 +12,14 @@ public class UserDetails {
     private Set<RoleDetails> roles;
     public UserDetails(){}
 
-    public UserDetails(Long id, String firstName, String lastName, String email, String phoneNumber, Set<RoleDetails> role) {
+    public UserDetails(Long id, String firstName, String lastName, String email, String password, String phoneNumber, Set<RoleDetails> role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.roles = role;
+        this.password = password;
     }
 
     public static UserDetails of(String firstName, String lastName, String email, String password, String phoneNumber, Set<RoleDetails> role) {
@@ -29,6 +30,12 @@ public class UserDetails {
         userDetails.setPhoneNumber(phoneNumber);
         userDetails.setEmail(email);
         userDetails.setPhoneNumber(password);
+        return userDetails;
+    }
+
+    public static UserDetails of(Long id, String firstName, String lastName, String email, String password, String phoneNumber, Set<RoleDetails> role) {
+        UserDetails userDetails = UserDetails.of(firstName, lastName, email, password, phoneNumber, role);
+        userDetails.setId(id);
         return userDetails;
     }
 
@@ -88,5 +95,16 @@ public class UserDetails {
         this.roles = roles;
     }
 
-  
+    @Override
+    public String toString() {
+        return "UserDetails{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

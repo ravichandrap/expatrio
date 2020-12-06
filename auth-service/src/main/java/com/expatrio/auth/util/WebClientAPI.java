@@ -7,7 +7,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
@@ -37,7 +39,7 @@ public class WebClientAPI {
     }
 
     private HttpRequest getHttpRequest(AuthRequest user) {
-        return HttpRequest.newBuilder(URI.create(userServiceURL + "/validate/")).setHeader("content-type", "application/json")
+        return HttpRequest.newBuilder(URI.create(userServiceURL + "/validate")).setHeader("content-type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(new GsonBuilder().create().toJson(user))).build();
     }
 
@@ -47,6 +49,13 @@ public class WebClientAPI {
     }
 
     public UserDetails validate(AuthRequest user) throws IOException, InterruptedException {
+
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<UserDetails> result = restTemplate.postForEntity(userServiceURL+"/validate", user, UserDetails.class);
+//
+//        UserDetails userDetails = result.getBody();
+//        HttpStatus statusCode = result.getStatusCode();
+
 
         final HttpRequest request = getHttpRequest(user);
         final HttpResponse<String> response = client.send(request,

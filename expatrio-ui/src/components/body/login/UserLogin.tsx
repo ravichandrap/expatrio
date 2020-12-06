@@ -7,7 +7,7 @@ export const UserLogin: FC = () => {
 
 const {LoginUser, message} = useContext(UsersContext);
     const [user, setUser] = useState({
-        email:"rc.divija@outlook.com",
+        email:"Samir.Jouni@example.com",
         password:"test1234"
     } as User);
 
@@ -18,7 +18,6 @@ const {LoginUser, message} = useContext(UsersContext);
             [name]: value
         })
     }
-
 
     return <div className="create-user">
             <div className="container">
